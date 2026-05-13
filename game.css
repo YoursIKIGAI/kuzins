@@ -1,0 +1,659 @@
+/* =================================================================
+   Whispering Hollows — storybook D&D adventure
+   palette: warm parchment cream, deep ink plum, sage, ember, blush
+   ================================================================= */
+:root{
+  --cream:#f4ecdc;
+  --cream-2:#ebe0c8;
+  --paper:#fbf6ea;
+  --ink:#2a1f2d;
+  --ink-soft:#4a3a4d;
+  --plum:#5b2a4b;
+  --plum-2:#7c3a66;
+  --ember:#d96b3a;
+  --ember-2:#b94f24;
+  --blush:#e9a6a0;
+  --sage:#6f8c5a;
+  --sage-2:#4f6a3e;
+  --gold:#c9963b;
+  --sky:#6fa5b8;
+  --shadow: 0 14px 28px -18px rgba(42,31,45,.55), 0 2px 0 rgba(42,31,45,.06);
+  --radius:18px;
+  --radius-sm:10px;
+  --transition:.32s cubic-bezier(.4,.0,.2,1);
+}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:'Fraunces', Georgia, serif;
+  font-size:16px;
+  color:var(--ink);
+  background:var(--cream);
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+::selection{background:var(--plum); color:var(--cream)}
+
+button,input,select,textarea{font-family:inherit; color:inherit}
+
+/* =================== scenery ====================================== */
+.scene{position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden}
+.scene .moon{
+  position:absolute; right:8%; top:9%;
+  width:120px; height:120px; border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, #fff7e2 0%, #f0d999 55%, #c9963b 100%);
+  box-shadow:0 0 80px rgba(201,150,59,.35);
+}
+.scene .stars{
+  position:absolute; inset:0;
+  background-image:
+    radial-gradient(2px 2px at 12% 18%, var(--plum) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 28% 12%, var(--ember) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 64% 22%, var(--sage) 50%, transparent 51%),
+    radial-gradient(2px 2px at 80% 8%, var(--plum) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 90% 26%, var(--gold) 50%, transparent 51%),
+    radial-gradient(1.5px 1.5px at 5% 32%, var(--ink-soft) 50%, transparent 51%);
+  opacity:.55;
+}
+.scene .cloud{position:absolute; height:36px; border-radius:40px; background:var(--paper); opacity:.85}
+.scene .cloud::before, .scene .cloud::after{content:""; position:absolute; background:var(--paper); border-radius:50%}
+.scene .cloud.c1{width:140px; top:14%; left:-160px; animation:drift 70s linear infinite}
+.scene .cloud.c1::before{width:60px; height:60px; top:-22px; left:18px}
+.scene .cloud.c1::after{width:46px; height:46px; top:-14px; left:74px}
+.scene .cloud.c2{width:180px; top:22%; left:-200px; animation:drift 110s linear infinite; animation-delay:-30s; opacity:.7}
+.scene .cloud.c2::before{width:70px; height:70px; top:-26px; left:30px}
+.scene .cloud.c2::after{width:54px; height:54px; top:-16px; left:96px}
+.scene .cloud.c3{width:110px; top:30%; left:-130px; animation:drift 90s linear infinite; animation-delay:-55s; opacity:.6}
+.scene .cloud.c3::before{width:48px; height:48px; top:-18px; left:14px}
+.scene .cloud.c3::after{width:38px; height:38px; top:-10px; left:58px}
+@keyframes drift{
+  from{transform:translateX(0)}
+  to{transform:translateX(120vw)}
+}
+.scene .hill{position:absolute; bottom:-80px; border-radius:50% 50% 0 0 / 100% 100% 0 0}
+.scene .hill.h1{left:-10%; width:60%; height:280px; background:var(--sage-2); opacity:.85}
+.scene .hill.h2{right:-15%; width:70%; height:220px; background:var(--plum); opacity:.75}
+.scene .hill.h3{left:30%; width:50%; height:160px; background:var(--ember); opacity:.55}
+.scene .grain{
+  position:absolute; inset:0;
+  background-image: radial-gradient(rgba(42,31,45,.07) 1px, transparent 1px);
+  background-size: 3px 3px;
+  mix-blend-mode:multiply;
+  opacity:.4;
+}
+
+/* =================== top bar ====================================== */
+.top-bar{
+  position:relative; z-index:5;
+  display:flex; justify-content:space-between; align-items:center;
+  padding:22px 32px;
+}
+.brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.02em}
+.brand-mark{
+  display:inline-grid; place-items:center;
+  width:32px; height:32px; border-radius:50%;
+  background:var(--ink); color:var(--cream);
+  font-size:14px;
+}
+.brand-name{font-size:18px}
+.top-actions{display:flex; gap:12px; align-items:center}
+.pill{
+  background:var(--ink); color:var(--cream);
+  padding:6px 14px; border-radius:999px;
+  font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+}
+
+/* =================== generic ====================================== */
+.stage{
+  position:relative; z-index:2;
+  padding:8px 32px 64px;
+  max-width:1240px;
+  margin:0 auto;
+}
+.panel{
+  background:var(--paper);
+  border:1px solid rgba(42,31,45,.12);
+  border-radius:var(--radius);
+  padding:36px 44px;
+  box-shadow:var(--shadow);
+  animation:rise .55s cubic-bezier(.2,.7,.2,1);
+}
+@keyframes rise{from{opacity:0; transform:translateY(14px)} to{opacity:1; transform:none}}
+
+.panel-header{margin-bottom:28px}
+.panel-header.center{text-align:center}
+.eyebrow{
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--plum); margin:0 0 8px;
+}
+.display{
+  font-size:clamp(28px, 4vw, 48px);
+  line-height:1.05; font-weight:800; margin:0;
+  font-variation-settings:"opsz" 144;
+}
+.display em{font-family:'Caveat', cursive; font-style:normal; color:var(--ember); font-weight:700; font-size:1.1em}
+.display.sm{font-size:clamp(22px, 2.8vw, 32px)}
+.lede{font-size:17px; color:var(--ink-soft); max-width:60ch; margin:14px 0 0; line-height:1.5}
+
+.field{display:flex; flex-direction:column; gap:6px; margin-bottom:14px}
+.field-label{
+  font-family:'JetBrains Mono', monospace;
+  font-size:11px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--ink-soft);
+}
+.field input[type="text"], .field input[type="number"], .field select, .field textarea{
+  background:var(--cream); border:1px solid rgba(42,31,45,.15); color:var(--ink);
+  border-radius:var(--radius-sm); padding:12px 14px; font-size:15px;
+  transition: border-color var(--transition), background var(--transition), transform var(--transition);
+}
+.field input:focus, .field select:focus, .field textarea:focus{outline:none; border-color:var(--plum); background:#fff}
+.field-hint{font-size:12px; color:var(--ink-soft)}
+
+.primary-btn{
+  background:var(--ink); color:var(--cream);
+  border:none; border-radius:999px;
+  padding:14px 26px; font-size:15px; font-weight:700;
+  cursor:pointer; letter-spacing:.01em;
+  transition: transform var(--transition), background var(--transition), box-shadow var(--transition);
+  box-shadow:0 6px 16px -8px rgba(42,31,45,.4);
+}
+.primary-btn:hover{transform:translateY(-2px); background:var(--plum)}
+.primary-btn:disabled{opacity:.45; cursor:not-allowed; transform:none; background:var(--ink)}
+.ghost-btn{
+  background:transparent; border:1px solid rgba(42,31,45,.2); color:var(--ink);
+  border-radius:999px; padding:10px 18px; cursor:pointer; font-size:14px;
+  transition: background var(--transition), color var(--transition);
+}
+.ghost-btn:hover{background:var(--ink); color:var(--cream)}
+.ghost-btn.tiny{padding:5px 12px; font-size:12px}
+
+.actions-row{display:flex; gap:14px; flex-wrap:wrap; margin-top:18px}
+.actions-row.tight{margin-top:6px}
+.actions-row.center{justify-content:center}
+
+/* =================== welcome ====================================== */
+.welcome-grid{
+  display:grid; grid-template-columns:1fr 1fr; gap:24px;
+  margin-top:8px;
+}
+.legend{
+  margin-top:32px; padding:22px 26px;
+  background:var(--cream); border-radius:var(--radius-sm);
+  border-left:4px solid var(--ember);
+}
+.dl-hint{
+  margin:14px 0 0; font-size:13px; color:var(--ink-soft); line-height:1.6;
+}
+.dl-hint code{
+  background:var(--cream); padding:2px 8px; border-radius:6px;
+  font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--plum);
+}
+.legend h3{margin:0 0 10px; font-size:14px; letter-spacing:.1em; text-transform:uppercase; font-family:'JetBrains Mono', monospace; color:var(--plum)}
+.legend ol{margin:0; padding-left:18px; color:var(--ink-soft); line-height:1.7}
+.legend ol b{color:var(--ink)}
+
+/* =================== creator ====================================== */
+.creator-grid{
+  display:grid; grid-template-columns: 360px 1fr; gap:36px;
+  align-items:start;
+}
+.avatar-stage{
+  position:sticky; top:24px;
+  background:linear-gradient(180deg, #fff7e3 0%, var(--cream) 100%);
+  border-radius:var(--radius);
+  padding:32px 24px 24px;
+  display:flex; flex-direction:column; align-items:center; gap:18px;
+  border:1px dashed rgba(42,31,45,.15);
+}
+.avatar{
+  position:relative; width:220px; height:260px;
+}
+.avatar .shadow{
+  position:absolute; left:50%; bottom:-6px; transform:translateX(-50%);
+  width:140px; height:14px; border-radius:50%;
+  background:rgba(42,31,45,.18); filter:blur(6px);
+}
+.avatar .head{
+  position:absolute; left:50%; top:60px; transform:translateX(-50%);
+  width:130px; height:130px; border-radius:50%;
+  background:#f1d4b1; /* skin */
+  box-shadow: inset -8px -10px 0 rgba(0,0,0,.05);
+  z-index:3;
+}
+.avatar .eye{
+  position:absolute; top:50px;
+  width:18px; height:22px; border-radius:50%;
+  background:var(--ink);
+}
+.avatar .eye::after{
+  content:""; position:absolute; top:4px; left:4px;
+  width:6px; height:6px; border-radius:50%; background:#fff;
+}
+.avatar .eye.left{left:32px}
+.avatar .eye.right{right:32px}
+.avatar .cheek{
+  position:absolute; top:82px; width:18px; height:10px; border-radius:50%;
+  background:var(--blush); opacity:.7;
+}
+.avatar .cheek.left{left:24px}
+.avatar .cheek.right{right:24px}
+.avatar .mouth{
+  position:absolute; left:50%; top:88px; transform:translateX(-50%);
+  width:22px; height:10px; border-bottom:3px solid var(--ink); border-radius:0 0 22px 22px;
+}
+
+/* eyes variations */
+.avatar[data-eyes="sparkle"] .eye::after{box-shadow:0 0 0 2px #fff inset, -3px -3px 0 #fff}
+.avatar[data-eyes="sleepy"] .eye{height:8px; top:60px; border-radius:14px 14px 0 0; background:var(--ink)}
+.avatar[data-eyes="fierce"] .eye{height:8px; transform:skewY(-12deg); top:62px}
+.avatar[data-eyes="fierce"] .eye.right{transform:skewY(12deg)}
+.avatar[data-eyes="curious"] .eye{width:24px; height:26px}
+.avatar[data-eyes="mischief"] .eye.right{height:6px; border-radius:14px 14px 0 0; top:62px}
+
+/* hats */
+.avatar .hat{position:absolute; left:50%; top:14px; transform:translateX(-50%); z-index:4; display:none}
+.avatar[data-hat="wizard"] .hat{
+  display:block;
+  width:0; height:0;
+  border-left:60px solid transparent; border-right:60px solid transparent;
+  border-bottom:90px solid var(--plum);
+  filter:drop-shadow(0 6px 0 rgba(0,0,0,.08));
+}
+.avatar[data-hat="wizard"] .hat::after{
+  content:""; position:absolute; left:-70px; top:78px;
+  width:140px; height:18px; background:var(--plum-2); border-radius:8px;
+}
+.avatar[data-hat="crown"] .hat{
+  display:block; width:80px; height:30px; background:var(--gold);
+  clip-path: polygon(0 100%, 0 30%, 15% 60%, 25% 0, 40% 60%, 50% 10%, 60% 60%, 75% 0, 85% 60%, 100% 30%, 100% 100%);
+  top:30px;
+}
+.avatar[data-hat="hood"] .hat{
+  display:block; width:160px; height:120px;
+  background:var(--ink-soft); border-radius:80px 80px 30px 30px;
+  top:30px; z-index:2;
+}
+.avatar[data-hat="feather"] .hat{
+  display:block; width:90px; height:30px; background:var(--ember);
+  border-radius:8px; top:36px;
+}
+.avatar[data-hat="feather"] .hat::after{
+  content:""; position:absolute; right:-6px; top:-22px;
+  width:8px; height:34px; background:var(--sage); border-radius:8px;
+  transform:rotate(20deg);
+}
+.avatar[data-hat="leaf"] .hat{
+  display:block; width:130px; height:22px;
+  background:var(--sage); border-radius:50%; top:46px;
+}
+.avatar[data-hat="leaf"] .hat::before{
+  content:""; position:absolute; left:6px; top:-10px;
+  width:18px; height:18px; background:var(--sage-2); border-radius:0 100% 0 100%;
+}
+.avatar[data-hat="leaf"] .hat::after{
+  content:""; position:absolute; right:6px; top:-10px;
+  width:18px; height:18px; background:var(--sage-2); border-radius:100% 0 100% 0;
+}
+
+/* cloak */
+.avatar .cloak{
+  position:absolute; left:50%; top:170px; transform:translateX(-50%);
+  width:170px; height:120px; border-radius:80px 80px 30px 30px;
+  background:var(--blush); z-index:1;
+}
+.avatar[data-cloak="rose"]  .cloak{background:var(--blush)}
+.avatar[data-cloak="moss"]  .cloak{background:var(--sage)}
+.avatar[data-cloak="ink"]   .cloak{background:var(--plum)}
+.avatar[data-cloak="ember"] .cloak{background:var(--ember)}
+.avatar[data-cloak="sky"]   .cloak{background:var(--sky)}
+.avatar[data-cloak="bone"]  .cloak{background:#ece2cf}
+
+/* hands */
+.avatar .hand{
+  position:absolute; top:200px; width:36px; height:36px; border-radius:50%;
+  background:#f1d4b1; z-index:5;
+}
+.avatar .hand.left{left:14px}
+.avatar .hand.right{right:14px}
+
+/* weapons (right hand) */
+.avatar .weapon{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%)}
+.avatar[data-weapon="wand"]   .weapon{width:6px; height:50px; background:var(--ink); border-radius:6px}
+.avatar[data-weapon="wand"]   .weapon::after{content:""; position:absolute; top:-6px; left:50%; transform:translateX(-50%); width:14px; height:14px; border-radius:50%; background:var(--gold); box-shadow:0 0 12px var(--gold)}
+.avatar[data-weapon="sword"]  .weapon{width:6px; height:64px; background:linear-gradient(180deg,#e8e8ee,#9aa0b4); border-radius:2px}
+.avatar[data-weapon="sword"]  .weapon::after{content:""; position:absolute; bottom:-8px; left:-10px; width:26px; height:6px; background:var(--gold); border-radius:3px}
+.avatar[data-weapon="bow"]    .weapon{width:10px; height:64px; border:3px solid var(--sage-2); border-radius:50%; background:transparent; border-left:none}
+.avatar[data-weapon="staff"]  .weapon{width:8px; height:74px; background:var(--sage-2); border-radius:4px}
+.avatar[data-weapon="staff"]  .weapon::after{content:""; position:absolute; top:-12px; left:50%; transform:translateX(-50%); width:18px; height:18px; border-radius:50%; background:var(--sage); border:3px solid var(--sage-2)}
+.avatar[data-weapon="dagger"] .weapon{width:4px; height:34px; background:#cfd6e2; border-radius:2px}
+.avatar[data-weapon="dagger"] .weapon::after{content:""; position:absolute; bottom:-6px; left:-6px; width:16px; height:4px; background:var(--ink); border-radius:2px}
+.avatar[data-weapon="lute"]   .weapon{width:30px; height:40px; background:var(--ember); border-radius:50%}
+.avatar[data-weapon="lute"]   .weapon::after{content:""; position:absolute; top:-22px; left:50%; transform:translateX(-50%); width:6px; height:30px; background:var(--ink-soft); border-radius:4px}
+
+/* elemental fx (left hand) */
+.avatar .element-fx{position:absolute; left:50%; top:50%; transform:translate(-50%,-90%); width:30px; height:30px; pointer-events:none}
+.avatar[data-strength="fire"] .element-fx{
+  background:radial-gradient(circle at 50% 70%, #ffeb88 0%, #f6a23a 40%, #d65a1a 70%, transparent 75%);
+  border-radius:50% 50% 30% 30% / 60% 60% 40% 40%;
+  filter:drop-shadow(0 0 14px rgba(214,90,26,.7));
+  animation:flicker 1.2s ease-in-out infinite;
+}
+@keyframes flicker{0%,100%{transform:translate(-50%,-90%) scale(1)} 50%{transform:translate(-50%,-95%) scale(1.1)}}
+.avatar[data-strength="ice"] .element-fx{
+  background:radial-gradient(circle at 50% 50%, #d6f1ff 0%, #8cc7e0 50%, transparent 75%);
+  border-radius:50%;
+  filter:drop-shadow(0 0 12px rgba(140,199,224,.85));
+  animation:pulse 1.6s ease-in-out infinite;
+}
+.avatar[data-strength="ice"] .element-fx::before, .avatar[data-strength="ice"] .element-fx::after{
+  content:""; position:absolute; inset:0; border-radius:50%;
+  background:linear-gradient(45deg, transparent 45%, #fff 47%, transparent 49%);
+  animation:spin 4s linear infinite;
+}
+.avatar[data-strength="ice"] .element-fx::after{transform:rotate(60deg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:translate(-50%,-90%) scale(1)} 50%{transform:translate(-50%,-90%) scale(1.15)}}
+.avatar[data-strength="light"] .element-fx{
+  background:radial-gradient(circle at 50% 50%, #fff7d4 0%, #ffd86b 40%, transparent 70%);
+  border-radius:50%;
+  filter:drop-shadow(0 0 18px rgba(255,216,107,.9));
+  animation:pulse 2s ease-in-out infinite;
+}
+.avatar[data-strength="light"] .element-fx::after{
+  content:""; position:absolute; inset:-8px; border-radius:50%;
+  background:conic-gradient(from 0deg, transparent 0 30deg, #fff7d4 30deg 45deg, transparent 45deg 90deg, #fff7d4 90deg 105deg, transparent 105deg 150deg, #fff7d4 150deg 165deg, transparent 165deg 210deg, #fff7d4 210deg 225deg, transparent 225deg 270deg, #fff7d4 270deg 285deg, transparent 285deg 330deg, #fff7d4 330deg 345deg, transparent 345deg 360deg);
+  opacity:.6; animation:spin 8s linear infinite;
+  -webkit-mask:radial-gradient(circle, transparent 40%, #000 50%);
+          mask:radial-gradient(circle, transparent 40%, #000 50%);
+}
+.avatar[data-strength="shadow"] .element-fx{
+  background:radial-gradient(circle at 50% 50%, #6b4978 0%, #2a1f2d 60%, transparent 80%);
+  border-radius:50%;
+  filter:drop-shadow(0 0 14px rgba(91,42,75,.85));
+  animation:pulse 2.2s ease-in-out infinite;
+}
+.avatar[data-strength="nature"] .element-fx{
+  background:radial-gradient(circle at 50% 50%, #b5d68a 0%, #6f8c5a 50%, transparent 75%);
+  border-radius:50%;
+  filter:drop-shadow(0 0 12px rgba(111,140,90,.8));
+}
+.avatar[data-strength="nature"] .element-fx::before{
+  content:""; position:absolute; left:-6px; top:-10px; width:14px; height:14px;
+  background:var(--sage-2); border-radius:0 100% 0 100%;
+  animation:leafy 3s ease-in-out infinite;
+}
+@keyframes leafy{0%,100%{transform:rotate(-10deg)} 50%{transform:rotate(20deg) translate(4px,-4px)}}
+
+.hp-preview{display:flex; flex-direction:column; align-items:center; gap:6px; width:100%}
+.hp-label{font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-soft)}
+.hp-bar{width:100%; height:10px; background:rgba(42,31,45,.12); border-radius:999px; overflow:hidden}
+.hp-fill{height:100%; background:linear-gradient(90deg, var(--ember), var(--plum)); transition:width .5s ease}
+.hp-value{font-family:'JetBrains Mono', monospace; font-weight:600; color:var(--ink)}
+
+.creator-form{display:grid; grid-template-columns:1fr 1fr; gap:14px 20px}
+.creator-form .role-field{grid-column:1 / -1; border:none; padding:0; margin-bottom:0}
+.role-field legend{padding:0; margin-bottom:6px}
+.role-pick{
+  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  background:var(--cream); border-radius:var(--radius-sm); margin-bottom:6px; cursor:pointer;
+  border:1px solid transparent; transition:border-color var(--transition);
+}
+.role-pick:has(input:checked){border-color:var(--plum); background:#fff}
+.creator-form .actions-row{grid-column:1 / -1}
+
+/* =================== theme ======================================== */
+.theme-grid{display:grid; grid-template-columns:repeat(5, 1fr); gap:16px; margin-bottom:24px}
+.theme-card{
+  position:relative; padding:24px 18px;
+  border:1px solid rgba(42,31,45,.15);
+  border-radius:var(--radius);
+  background:var(--cream);
+  cursor:pointer; text-align:left;
+  transition:transform var(--transition), border-color var(--transition), background var(--transition);
+}
+.theme-card:hover{transform:translateY(-4px); border-color:var(--plum)}
+.theme-card.selected{border-color:var(--ink); background:#fff; box-shadow:var(--shadow)}
+.theme-card .icon{font-size:32px; line-height:1; margin-bottom:12px; display:block; font-family:'Caveat',cursive; color:var(--plum)}
+.theme-card h4{margin:0; font-size:18px}
+.theme-card p{margin:6px 0 0; font-size:13px; color:var(--ink-soft); line-height:1.4}
+
+.party-preview{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(110px,1fr));
+  gap:12px; margin-bottom:24px; padding:16px;
+  background:var(--cream); border-radius:var(--radius-sm);
+}
+.party-chip{
+  display:flex; flex-direction:column; align-items:center; gap:6px;
+  padding:10px; background:var(--paper); border-radius:var(--radius-sm);
+  border:1px solid rgba(42,31,45,.08);
+}
+.party-chip .mini-avatar{width:46px; height:46px}
+.party-chip .name{font-size:13px; font-weight:700}
+.party-chip .role-tag{font-family:'JetBrains Mono', monospace; font-size:9px; letter-spacing:.12em; text-transform:uppercase; color:var(--plum)}
+
+/* mini avatar (reusable) */
+.mini-avatar{position:relative; border-radius:50%; overflow:hidden; flex-shrink:0}
+.mini-avatar .m-head{position:absolute; inset:18% 18%; background:#f1d4b1; border-radius:50%}
+.mini-avatar .m-cloak{position:absolute; left:10%; right:10%; bottom:0; height:55%; border-radius:60% 60% 20% 20%}
+.mini-avatar .m-hat{position:absolute; left:30%; right:30%; top:0; height:25%; background:var(--plum); border-radius:50% 50% 0 0}
+.mini-avatar .m-eye{position:absolute; width:6px; height:6px; background:var(--ink); border-radius:50%; top:42%}
+.mini-avatar .m-eye.l{left:30%} .mini-avatar .m-eye.r{right:30%}
+.mini-avatar[data-cloak="rose"]  .m-cloak{background:var(--blush)}
+.mini-avatar[data-cloak="moss"]  .m-cloak{background:var(--sage)}
+.mini-avatar[data-cloak="ink"]   .m-cloak{background:var(--plum)}
+.mini-avatar[data-cloak="ember"] .m-cloak{background:var(--ember)}
+.mini-avatar[data-cloak="sky"]   .m-cloak{background:var(--sky)}
+.mini-avatar[data-cloak="bone"]  .m-cloak{background:#ece2cf}
+
+/* =================== game stage =================================== */
+.game-panel{
+  display:grid; grid-template-columns:280px 1fr; gap:28px;
+  padding:28px;
+}
+.party-rail{
+  display:flex; flex-direction:column; gap:12px;
+  max-height:80vh; overflow-y:auto; padding-right:6px;
+}
+.party-card{
+  display:flex; gap:12px; padding:12px;
+  background:var(--cream); border-radius:var(--radius-sm);
+  border:2px solid transparent;
+  transition: border-color var(--transition), transform var(--transition), opacity var(--transition);
+}
+.party-card.active{border-color:var(--plum); background:#fff; transform:translateX(4px)}
+.party-card.fallen{opacity:.45; filter:grayscale(.7)}
+.party-card.fallen .pc-name::after{content:" †"; color:var(--plum)}
+.party-card .mini-avatar{width:58px; height:58px}
+.party-card .pc-body{flex:1; min-width:0}
+.pc-name{font-weight:700; font-size:14px; margin:0}
+.pc-meta{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft); margin:2px 0 6px}
+.pc-meta .role-prot{color:var(--sage-2)} .pc-meta .role-anta{color:var(--ember-2)}
+.pc-hp{height:6px; border-radius:999px; background:rgba(42,31,45,.1); overflow:hidden}
+.pc-hp-fill{height:100%; background:linear-gradient(90deg, var(--ember), var(--plum)); transition:width .5s ease}
+
+.game-main{display:flex; flex-direction:column; gap:18px; min-width:0}
+.theme-banner{
+  padding:18px 22px; border-radius:var(--radius-sm);
+  background:linear-gradient(135deg, var(--plum), var(--ink));
+  color:var(--cream); display:flex; justify-content:space-between; align-items:center; gap:16px;
+}
+.theme-banner .t-title{font-size:18px; font-weight:700}
+.theme-banner .t-blurb{font-family:'Caveat',cursive; font-size:18px; opacity:.9}
+
+.narration{
+  padding:18px 22px; background:var(--cream); border-radius:var(--radius-sm);
+  font-family:'Caveat', cursive; font-size:22px; line-height:1.35; color:var(--ink);
+  min-height:80px;
+  border-left:4px solid var(--ember);
+}
+
+.turn-card{
+  padding:18px 22px; background:#fff; border-radius:var(--radius-sm);
+  border:1px solid rgba(42,31,45,.12);
+}
+.turn-name{margin:4px 0 12px; font-size:22px}
+.turn-actions{display:grid; grid-template-columns:1fr auto auto; gap:12px; align-items:end}
+.target-field{margin-bottom:0}
+
+.log{
+  padding:18px 22px; background:var(--cream); border-radius:var(--radius-sm);
+  max-height:220px; overflow-y:auto;
+  display:flex; flex-direction:column; gap:8px;
+  font-size:14px;
+}
+.log .entry{padding:8px 12px; background:var(--paper); border-radius:8px; border-left:3px solid var(--plum)}
+.log .entry.hit{border-left-color:var(--ember)}
+.log .entry.miss{border-left-color:var(--ink-soft); opacity:.85}
+.log .entry.kill{border-left-color:#b3002b; background:#fbe5e5}
+.log .entry b{color:var(--plum)}
+
+/* =================== modal / riddle =============================== */
+.modal-backdrop{
+  position:fixed; inset:0; z-index:50;
+  background:rgba(42,31,45,.55); backdrop-filter:blur(6px);
+  display:grid; place-items:center; padding:20px;
+  animation:fadeIn .3s ease;
+}
+@keyframes fadeIn{from{opacity:0} to{opacity:1}}
+.modal{
+  background:var(--paper); border-radius:var(--radius);
+  padding:32px 36px; max-width:560px; width:100%;
+  max-height:min(86vh, 720px);
+  overflow-y:auto;
+  box-shadow:0 30px 60px -20px rgba(0,0,0,.45);
+  animation:popIn .35s cubic-bezier(.2,.9,.2,1.2);
+}
+@keyframes popIn{from{opacity:0; transform:scale(.92)} to{opacity:1; transform:scale(1)}}
+.riddle-text{
+  font-family:'Caveat',cursive; font-size:26px; line-height:1.3;
+  color:var(--ink); margin:10px 0;
+}
+.riddle-source{display:flex; gap:8px; align-items:center; margin-bottom:14px}
+.tag{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; background:var(--ink); color:var(--cream); padding:4px 10px; border-radius:999px}
+.dice-tray{display:flex; gap:18px; justify-content:center; margin:18px 0}
+.die{
+  width:60px; height:60px; border-radius:14px;
+  display:grid; place-items:center;
+  font-weight:800; font-family:'JetBrains Mono',monospace; font-size:20px;
+  color:var(--cream); background:var(--ink);
+  box-shadow:inset -4px -6px 0 rgba(0,0,0,.25), 0 6px 0 rgba(42,31,45,.2);
+  position:relative;
+}
+.die.d20{background:var(--plum)}
+.die.d6{background:var(--ember)}
+.die.rolling{animation:tumble .8s ease}
+@keyframes tumble{
+  0%{transform:rotate(0) translateY(0)}
+  25%{transform:rotate(180deg) translateY(-30px)}
+  50%{transform:rotate(360deg) translateY(0)}
+  75%{transform:rotate(540deg) translateY(-15px)}
+  100%{transform:rotate(720deg) translateY(0)}
+}
+.riddle-result{margin:12px 0 0; font-family:'Caveat', cursive; font-size:22px; min-height:30px}
+.riddle-result.hit{color:var(--sage-2)}
+.riddle-result.miss{color:var(--ember-2)}
+
+/* =================== credits ====================================== */
+.credits-panel{padding:48px 44px}
+.dance-floor{
+  position:relative;
+  margin:32px auto;
+  height:340px;
+  background:linear-gradient(180deg, transparent 0%, transparent 60%, rgba(91,42,75,.1) 100%);
+  border-radius:var(--radius);
+  display:flex; justify-content:center; align-items:flex-end; gap:30px;
+  overflow:hidden;
+}
+.dance-floor::before{
+  content:""; position:absolute; inset:0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(217,107,58,.35), transparent 30%),
+    radial-gradient(circle at 80% 25%, rgba(91,42,75,.4),  transparent 35%),
+    radial-gradient(circle at 50% 80%, rgba(201,150,59,.3), transparent 40%);
+  animation:lights 6s ease-in-out infinite alternate;
+}
+@keyframes lights{from{filter:hue-rotate(0)} to{filter:hue-rotate(40deg)}}
+
+.dancer{
+  position:relative; z-index:2;
+  transform-origin:bottom center;
+}
+.dancer .avatar{width:140px; height:170px; transform-origin:center bottom}
+.dancer .avatar .head{width:80px; height:80px; top:30px}
+.dancer .avatar .eye{width:10px; height:14px; top:30px}
+.dancer .avatar .eye.left{left:20px} .dancer .avatar .eye.right{right:20px}
+.dancer .avatar .cheek{width:12px; height:6px; top:54px}
+.dancer .avatar .cheek.left{left:14px} .dancer .avatar .cheek.right{right:14px}
+.dancer .avatar .mouth{width:14px; height:6px; top:58px}
+.dancer .avatar .cloak{width:110px; height:80px; top:110px}
+.dancer .avatar .hand{width:24px; height:24px; top:130px}
+.dancer .avatar .hand.left{left:6px} .dancer .avatar .hand.right{right:6px}
+.dancer .avatar .hat{top:0}
+.dancer .avatar[data-hat="wizard"] .hat{border-left-width:36px; border-right-width:36px; border-bottom-width:58px}
+.dancer .avatar[data-hat="wizard"] .hat::after{left:-42px; top:50px; width:84px; height:12px}
+.dancer .avatar .shadow{width:90px; bottom:-4px}
+
+/* dance choreographies */
+.dancer.solo{animation:soloDance 2.4s ease-in-out infinite}
+@keyframes soloDance{
+  0%,100%{transform:translateY(0) rotate(-4deg)}
+  25%{transform:translateY(-30px) rotate(8deg)}
+  50%{transform:translateY(0) rotate(-4deg) scale(1.06)}
+  75%{transform:translateY(-20px) rotate(12deg)}
+}
+.dancer.duo-a{animation:duoA 2.2s ease-in-out infinite}
+.dancer.duo-b{animation:duoB 2.2s ease-in-out infinite}
+@keyframes duoA{
+  0%,100%{transform:translateX(0) rotate(0)}
+  50%{transform:translateX(60px) rotate(-10deg)}
+}
+@keyframes duoB{
+  0%,100%{transform:translateX(0) rotate(0)}
+  50%{transform:translateX(-60px) rotate(10deg)}
+}
+.dancer.group{animation:groupDance 2.6s ease-in-out infinite}
+.dancer.group:nth-child(odd){animation-direction:reverse}
+@keyframes groupDance{
+  0%,100%{transform:translateY(0) rotate(-6deg) scale(1)}
+  33%{transform:translateY(-18px) rotate(0) scale(1.04)}
+  66%{transform:translateY(0) rotate(8deg) scale(1)}
+}
+
+/* death animation */
+.party-card .mini-avatar.dying, .avatar.dying{
+  animation:die 1.6s ease forwards;
+}
+@keyframes die{
+  0%{transform:rotate(0) translateY(0); opacity:1}
+  30%{transform:rotate(20deg) translateY(-10px) scale(1.1); opacity:1}
+  70%{transform:rotate(-90deg) translateY(40px); opacity:.7}
+  100%{transform:rotate(-90deg) translateY(60px); opacity:.3}
+}
+
+.credits-list{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+  gap:14px; margin:28px 0 8px;
+}
+.credit-row{
+  padding:12px 16px; background:var(--cream); border-radius:var(--radius-sm);
+  display:flex; gap:12px; align-items:center;
+}
+.credit-row .role{font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--plum)}
+.credit-row .who{font-weight:700; font-size:14px}
+.credit-row.fallen{opacity:.6; text-decoration:line-through; text-decoration-color:rgba(0,0,0,.3)}
+
+/* =================== responsive =================================== */
+@media (max-width: 880px){
+  .stage{padding:8px 16px 48px}
+  .panel{padding:24px 22px}
+  .welcome-grid{grid-template-columns:1fr}
+  .creator-grid{grid-template-columns:1fr}
+  .avatar-stage{position:static}
+  .theme-grid{grid-template-columns:repeat(2,1fr)}
+  .game-panel{grid-template-columns:1fr}
+  .turn-actions{grid-template-columns:1fr}
+  .creator-form{grid-template-columns:1fr}
+}
